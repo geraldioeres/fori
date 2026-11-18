@@ -38,5 +38,13 @@ export function FieldIcon({ type }: { type: FieldType }) {
           <path d="M10 7l1.5 1.5L13 7" />
         </svg>
       );
+    case 'image':
+      return (
+        <svg {...common} aria-hidden>
+          <rect x="1.5" y="2.5" width="13" height="11" rx="1.5" />
+          <circle cx="5.5" cy="6" r="1.3" />
+          <path d="M2 12l4-3.5 3 2.5 2-1.5 3.5 2.5" />
+        </svg>
+      );
   }
 }

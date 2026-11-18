@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { PDFDocument, PDFName, StandardFonts, rgb } from 'pdf-lib';
 
 async function samplePdf(): Promise<Buffer> {
   const doc = await PDFDocument.create();
@@ -65,6 +65,12 @@ test('upload → place a text field → download a fillable PDF', async ({ page 
   await expect(fontSize.locator('option', { hasText: 'Auto' })).toHaveCount(0);
   await panel.locator('textarea').fill('Line one\nLine two');
 
+  // Image field: placed like any other field, explains where it works.
+  await page.getByRole('button', { name: 'Image', exact: true }).click();
+  await overlay.click({ position: { x: 350, y: 200 } });
+  await expect(page.getByTestId('field')).toHaveCount(4);
+  await expect(panel.getByText('Adobe Acrobat and Acrobat Reader', { exact: false })).toBeVisible();
+
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download PDF' }).click();
   const download = await downloadPromise;
@@ -72,7 +78,9 @@ test('upload → place a text field → download a fillable PDF', async ({ page 
 
   const out = await PDFDocument.load(await readFile(await download.path()));
   const fields = out.getForm().getFields();
-  expect(fields.map((f) => f.getName()).sort()).toEqual(['checkbox_1', 'full_name', 'multiline_1']);
+  expect(fields.map((f) => f.getName()).sort()).toEqual(['checkbox_1', 'full_name', 'image_1', 'multiline_1']);
+  const imageAction = out.getForm().getButton('image_1').acroField.getWidgets()[0].dict.get(PDFName.of('A'));
+  expect(String(imageAction)).toContain('buttonImportIcon');
   const notes = out.getForm().getTextField('multiline_1');
   expect(notes.isMultiline()).toBe(true);
   expect(notes.getText()).toBe('Line one\nLine two');

@@ -1,6 +1,12 @@
 import {
+  PDFButton,
   PDFCheckBox,
+  PDFDict,
   PDFDocument,
+  PDFHexString,
+  PDFRawStream,
+  PDFString,
+  decodePDFRawStream,
   PDFDropdown,
   PDFField,
   PDFName,
@@ -29,6 +35,7 @@ export async function loadPdf(bytes: Uint8Array): Promise<PDFDocument> {
  */
 export function isEditable(field: PDFField): boolean {
   if (field instanceof PDFRadioGroup) return true;
+  if (field instanceof PDFButton) return isImageButton(field);
   if (field instanceof PDFTextField || field instanceof PDFCheckBox || field instanceof PDFDropdown) {
     return field.acroField.getWidgets().length === 1;
   }
@@ -42,6 +49,36 @@ export function lockedKind(field: PDFField): string {
     return `${ctor} (multiple widgets)`;
   }
   return ctor;
+}
+
+/** The JavaScript action script that makes a push button an image picker (as Acrobat's "Image field" does). */
+export const IMAGE_IMPORT_JS = 'event.target.buttonImportIcon();';
+
+function jsText(action: unknown): string {
+  if (!(action instanceof PDFDict)) return '';
+  const js = action.lookup(PDFName.of('JS'));
+  if (js instanceof PDFString || js instanceof PDFHexString) return js.decodeText();
+  if (js instanceof PDFRawStream) {
+    try {
+      return new TextDecoder('latin1').decode(decodePDFRawStream(js).decode());
+    } catch {
+      return '';
+    }
+  }
+  return '';
+}
+
+/** A single-widget push button whose click (or mouse-up) action calls `buttonImportIcon`. */
+export function isImageButton(field: PDFField): boolean {
+  if (!(field instanceof PDFButton)) return false;
+  const widgets = field.acroField.getWidgets();
+  if (widgets.length !== 1) return false;
+  const dicts = [widgets[0].dict, field.acroField.dict];
+  return dicts.some((d) => {
+    const aa = d.lookup(PDFName.of('AA'));
+    const actions = [d.lookup(PDFName.of('A')), aa instanceof PDFDict ? aa.lookup(PDFName.of('U')) : undefined];
+    return actions.some((a) => /buttonImportIcon\s*\(/.test(jsText(a)));
+  });
 }
 
 /** Map of annotation ref → page index, for locating widgets without a /P entry. */

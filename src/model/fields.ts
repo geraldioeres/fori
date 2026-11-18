@@ -6,6 +6,7 @@ export const FIELD_LABELS: Record<FieldType, string> = {
   checkbox: 'Checkbox',
   radio: 'Radio',
   dropdown: 'Dropdown',
+  image: 'Image',
 };
 
 export const DEFAULT_SIZE: Record<FieldType, { w: number; h: number }> = {
@@ -14,6 +15,7 @@ export const DEFAULT_SIZE: Record<FieldType, { w: number; h: number }> = {
   checkbox: { w: 14, h: 14 },
   radio: { w: 14, h: 14 },
   dropdown: { w: 140, h: 22 },
+  image: { w: 150, h: 110 },
 };
 
 export const MIN_SIZE = 6;
@@ -63,6 +65,8 @@ export function createField(
       return { ...base, type, exportValue: 'Choice1', checked: false };
     case 'dropdown':
       return { ...base, type, options: ['Option 1', 'Option 2'], defaultValue: '', fontSize: 0 };
+    case 'image':
+      return { ...base, type, style: { ...base.style, backgroundColor: '#f3f4f6' } };
   }
 }
 
