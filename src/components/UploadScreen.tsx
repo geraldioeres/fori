@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { openFile } from '../actions';
 import { useNotice } from '../state/notice';
+import { Logo } from './Logo';
 
 export function UploadScreen() {
   const input = useRef<HTMLInputElement>(null);
@@ -18,7 +19,8 @@ export function UploadScreen() {
   return (
     <div className="flex h-full items-center justify-center p-8">
       <div className="w-full max-w-xl text-center">
-        <h1 className="mb-2 text-3xl font-semibold tracking-tight">PDF Form Builder</h1>
+        <Logo size={72} className="mx-auto mb-4" />
+        <h1 className="mb-2 text-3xl font-semibold tracking-tight">Fori · PDF Form Builder</h1>
         <p className="mb-8 text-gray-600">
           Turn any PDF into a fillable form. Add text fields, checkboxes, radio buttons and dropdowns. Your file never leaves this
           browser.
