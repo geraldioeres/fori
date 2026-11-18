@@ -10,6 +10,7 @@ import { Thumbnails } from './components/Thumbnails';
 import { PropertiesPanel } from './components/PropertiesPanel';
 import { Warnings } from './components/Warnings';
 import { useKeyboard } from './components/useKeyboard';
+import { Logo } from './components/Logo';
 
 const MIN_DESKTOP_WIDTH = 900;
 
@@ -54,6 +55,7 @@ export default function App() {
     return (
       <div className="flex h-full items-center justify-center p-8 text-center">
         <div>
+          <Logo size={56} className="mx-auto mb-3" />
           <h1 className="mb-2 text-xl font-semibold">Fori PDF Form Builder</h1>
           <p className="text-gray-600">Please open this page on a desktop or laptop computer. Form editing isn’t supported on small screens.</p>
         </div>

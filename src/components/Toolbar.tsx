@@ -9,6 +9,7 @@ import { clearSession } from '../state/autosave';
 import { useNotice } from '../state/notice';
 import { ZOOM_STEPS, useEditor } from '../state/store';
 import { FieldIcon } from './FieldIcon';
+import { Logo } from './Logo';
 
 export const DRAG_MIME = 'application/x-fori-field';
 const TYPES: FieldType[] = ['text', 'multiline', 'checkbox', 'radio', 'dropdown'];
@@ -43,6 +44,7 @@ export function Toolbar() {
 
   return (
     <header className="flex h-12 shrink-0 items-center gap-1 border-b border-gray-200 bg-white px-3">
+      <Logo size={24} className="mr-2 shrink-0" />
       <span className="mr-2 max-w-56 truncate text-sm font-medium" title={s.doc?.fileName}>
         {s.doc?.fileName}
       </span>
