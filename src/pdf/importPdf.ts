@@ -2,7 +2,7 @@ import { PDFCheckBox, PDFDropdown, PDFHexString, PDFName, PDFRadioGroup, PDFStri
 import type { PDFField } from 'pdf-lib';
 import { componentsToHex, parseDA } from '../model/color';
 import { pageInfo, pdfRectToDisplay } from '../model/coords';
-import { newId } from '../model/fields';
+import { MULTILINE_DEFAULT_FONT_SIZE, newId } from '../model/fields';
 import type { FieldStyle, FormField, ImportResult, LockedField, PageInfo } from '../model/types';
 import { annotPageMap, isEditable, loadPdf, lockedKind, widgetPageIndex } from './pdfForm';
 
@@ -70,14 +70,14 @@ export async function importPdf(bytes: Uint8Array): Promise<ImportResult> {
       if (!editable) {
         locked.push({ id: base.id, name, page: pageIdx, ...rect, kind: lockedKind(field) });
       } else if (field instanceof PDFTextField) {
-        fields.push({
-          ...base,
-          type: 'text',
-          defaultValue: field.getText() ?? '',
-          fontSize: da.fontSize,
-          maxLength: field.getMaxLength() ?? null,
-          multiline: field.isMultiline(),
-        });
+        const text = { defaultValue: field.getText() ?? '', maxLength: field.getMaxLength() ?? null };
+        if (field.isMultiline()) {
+          // "Auto" size makes readers shrink the text as lines are added; pin it to a fixed size.
+          const fontSize = da.fontSize > 0 ? da.fontSize : MULTILINE_DEFAULT_FONT_SIZE;
+          fields.push({ ...base, ...text, type: 'multiline', fontSize });
+        } else {
+          fields.push({ ...base, ...text, type: 'text', fontSize: da.fontSize });
+        }
       } else if (field instanceof PDFCheckBox) {
         fields.push({ ...base, type: 'checkbox', checked: field.isChecked() });
       } else if (field instanceof PDFRadioGroup) {

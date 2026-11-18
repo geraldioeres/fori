@@ -54,6 +54,17 @@ test('upload → place a text field → download a fillable PDF', async ({ page 
   await page.keyboard.press('Control+Shift+z');
   await expect(page.getByTestId('field')).toHaveCount(2);
 
+  // Multi-line is its own tool, and its font size has no "Auto" option.
+  await page.getByRole('button', { name: 'Multi-line', exact: true }).click();
+  await overlay.click({ position: { x: 60, y: 200 } });
+  await expect(page.getByTestId('field')).toHaveCount(3);
+  const panel = page.getByLabel('Field properties');
+  await expect(panel.getByText('Multi-line text', { exact: true })).toBeVisible();
+  const fontSize = panel.getByRole('combobox').first();
+  await expect(fontSize).toHaveValue('12');
+  await expect(fontSize.locator('option', { hasText: 'Auto' })).toHaveCount(0);
+  await panel.locator('textarea').fill('Line one\nLine two');
+
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download PDF' }).click();
   const download = await downloadPromise;
@@ -61,7 +72,12 @@ test('upload → place a text field → download a fillable PDF', async ({ page 
 
   const out = await PDFDocument.load(await readFile(await download.path()));
   const fields = out.getForm().getFields();
-  expect(fields.map((f) => f.getName()).sort()).toEqual(['checkbox_1', 'full_name']);
+  expect(fields.map((f) => f.getName()).sort()).toEqual(['checkbox_1', 'full_name', 'multiline_1']);
+  const notes = out.getForm().getTextField('multiline_1');
+  expect(notes.isMultiline()).toBe(true);
+  expect(notes.getText()).toBe('Line one\nLine two');
+  expect(notes.acroField.getDefaultAppearance()).toMatch(/\/Helv 12 Tf/);
+  expect(out.getForm().getTextField('full_name').isMultiline()).toBe(false);
   const rect = out.getForm().getTextField('full_name').acroField.getWidgets()[0].getRectangle();
   // Clicked at (150, 95) CSS px at 100% zoom = top-left of the field in points.
   expect(rect.x).toBeCloseTo(150, 0);

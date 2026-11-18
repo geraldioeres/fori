@@ -1,4 +1,5 @@
 import { del, get, set } from 'idb-keyval';
+import { MULTILINE_DEFAULT_FONT_SIZE } from '../model/fields';
 import type { FormField, LockedField, PageInfo } from '../model/types';
 import { useEditor } from './store';
 
@@ -15,10 +16,21 @@ export interface SavedSession {
 
 export async function loadSession(): Promise<SavedSession | null> {
   try {
-    return (await get<SavedSession>(KEY)) ?? null;
+    const saved = (await get<SavedSession>(KEY)) ?? null;
+    if (saved) saved.fields = saved.fields.map(migrateField);
+    return saved;
   } catch {
     return null;
   }
+}
+
+/** Sessions saved before multi-line became its own type stored it as `text` + `multiline: true`. */
+function migrateField(f: FormField): FormField {
+  const legacy = f as FormField & { multiline?: boolean };
+  if (legacy.type !== 'text' || legacy.multiline === undefined) return f;
+  const { multiline, ...rest } = legacy;
+  if (!multiline) return rest;
+  return { ...rest, type: 'multiline', fontSize: rest.fontSize > 0 ? rest.fontSize : MULTILINE_DEFAULT_FONT_SIZE };
 }
 
 export async function clearSession(): Promise<void> {

@@ -11,7 +11,7 @@ import { ZOOM_STEPS, useEditor } from '../state/store';
 import { FieldIcon } from './FieldIcon';
 
 export const DRAG_MIME = 'application/x-fori-field';
-const TYPES: FieldType[] = ['text', 'checkbox', 'radio', 'dropdown'];
+const TYPES: FieldType[] = ['text', 'multiline', 'checkbox', 'radio', 'dropdown'];
 
 function Tip({ label, children }: { label: string; children: ReactNode }) {
   return (

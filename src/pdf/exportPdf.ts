@@ -16,7 +16,7 @@ import {
 import type { PDFField, PDFPage, PDFWidgetAnnotation } from 'pdf-lib';
 import { hexToRgb01 } from '../model/color';
 import { displayRectToPdf, pageInfo } from '../model/coords';
-import { readingOrder } from '../model/fields';
+import { MULTILINE_DEFAULT_FONT_SIZE, readingOrder } from '../model/fields';
 import type { FieldStyle, FormField, PageInfo, RadioField } from '../model/types';
 import { isEditable, loadPdf, removeFieldCompletely } from './pdfForm';
 
@@ -118,16 +118,21 @@ export async function exportPdf(original: Uint8Array, fields: FormField[]): Prom
     const opts = appearanceOpts(page, info, f.style, font);
 
     switch (f.type) {
-      case 'text': {
+      case 'text':
+      case 'multiline': {
         const tf = form.createTextField(f.name);
-        if (f.multiline) tf.enableMultiline();
+        if (f.type === 'multiline') tf.enableMultiline();
         if (f.maxLength && f.maxLength > 0) tf.setMaxLength(f.maxLength);
         if (f.defaultValue) tf.setText(f.maxLength ? f.defaultValue.slice(0, f.maxLength) : f.defaultValue);
         setDA(tf, f.fontSize, f.style.textColor);
         tf.addToPage(page, opts);
         placeWidget(lastWidget(tf), f, info);
         setCommon(tf, f);
-        created.set(tf, { size: f.fontSize, color: f.style.textColor });
+        created.set(tf, {
+          // Never write "auto" for multi-line: readers would shrink the text as lines are added.
+          size: f.type === 'multiline' && f.fontSize <= 0 ? MULTILINE_DEFAULT_FONT_SIZE : f.fontSize,
+          color: f.style.textColor,
+        });
         break;
       }
       case 'checkbox': {
