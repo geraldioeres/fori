@@ -10,6 +10,13 @@ export function FieldIcon({ type }: { type: FieldType }) {
           <path d="M4 6.5v3M3.2 6.5h1.6M3.2 9.5h1.6" />
         </svg>
       );
+    case 'multiline':
+      return (
+        <svg {...common} aria-hidden>
+          <rect x="1.5" y="2" width="13" height="12" rx="1" />
+          <path d="M4 5.5h8M4 8h8M4 10.5h5" />
+        </svg>
+      );
     case 'checkbox':
       return (
         <svg {...common} aria-hidden>

@@ -2,6 +2,7 @@ import type { FieldType, FormField, LockedField, Rect } from './types';
 
 export const FIELD_LABELS: Record<FieldType, string> = {
   text: 'Text',
+  multiline: 'Multi-line',
   checkbox: 'Checkbox',
   radio: 'Radio',
   dropdown: 'Dropdown',
@@ -9,12 +10,17 @@ export const FIELD_LABELS: Record<FieldType, string> = {
 
 export const DEFAULT_SIZE: Record<FieldType, { w: number; h: number }> = {
   text: { w: 160, h: 22 },
+  multiline: { w: 220, h: 72 },
   checkbox: { w: 14, h: 14 },
   radio: { w: 14, h: 14 },
   dropdown: { w: 140, h: 22 },
 };
 
 export const MIN_SIZE = 6;
+
+/** Fixed font size for new multi-line fields (and imported ones that used "auto"). */
+export const MULTILINE_DEFAULT_FONT_SIZE = 12;
+export const FONT_SIZES = [6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 36];
 
 let idCounter = 0;
 export function newId(): string {
@@ -48,7 +54,9 @@ export function createField(
   };
   switch (type) {
     case 'text':
-      return { ...base, type, defaultValue: '', fontSize: 0, maxLength: null, multiline: false };
+      return { ...base, type, defaultValue: '', fontSize: 0, maxLength: null };
+    case 'multiline':
+      return { ...base, type, defaultValue: '', fontSize: MULTILINE_DEFAULT_FONT_SIZE, maxLength: null };
     case 'checkbox':
       return { ...base, type, checked: false };
     case 'radio':

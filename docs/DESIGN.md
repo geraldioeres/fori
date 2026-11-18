@@ -8,11 +8,11 @@ Settled during the design interview on 2026-11-18.
 | Q1 | **Fillable-form builder**: places real AcroForm fields on an existing PDF so others can fill them in any reader. "Fill & flatten" is a possible later add-on. |
 | Q2 | Personal / internal tool. No accounts, no billing. |
 | Q3 | 100% client-side. pdf.js renders, pdf-lib reads/writes. Files never leave the browser. |
-| Q4 | v1 field types: single-line text, multi-line text, checkbox, radio group, dropdown. |
+| Q4 | v1 field types: single-line text, multi-line text (a separate tool/type), checkbox, radio group, dropdown. |
 | Q5 | React + TypeScript + Vite; DOM overlay for fields (no canvas lib). |
 | Q6 | Input is an uploaded PDF only (no blank documents in v1). |
 | Q7 | Existing AcroForm fields are imported and editable. Unsupported types (signature, button, list box) are preserved untouched and shown as locked outlines. |
-| Q8 | Properties: name (auto-generated, unique, duplicate warnings), required, read-only, tooltip; text: default value, font size (auto or fixed), max length, multi-line; dropdown: options + default; radio: group name + per-button export value; checkbox: checked by default; colors: border / background / text. Helvetica only. |
+| Q8 | Properties: name (auto-generated, unique, duplicate warnings), required, read-only, tooltip; text: default value, font size (auto or fixed), max length; multi-line text: default value, **fixed** font size (default 12, no auto, so readers scroll instead of shrinking the text as lines are added), max length; dropdown: options + default; radio: group name + per-button export value; checkbox: checked by default; colors: border / background / text. Helvetica only. |
 | Q9 | Editor: drag or click to place, move/resize, arrow-key nudge, delete, copy/paste/duplicate, undo/redo, zoom, page thumbnails, snap-to-edges. Not in v1: multi-select, align tools, auto-detect, page ops. |
 | Q10 | Autosave the current session to IndexedDB. Re-uploading a downloaded PDF is the "project file". |
 | Q11 | Static build, deployable to any static host. |

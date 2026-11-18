@@ -67,8 +67,8 @@ describe('export → import round trip', () => {
       style: { borderColor: '#ff0000', backgroundColor: '#eeeeee', textColor: '#0000ff' },
     });
     const multi = add({
-      ...(createField('text', 1, { x: 100, y: 120, w: 300, h: 80 }, names) as Extract<FormField, { type: 'text' }>),
-      multiline: true,
+      ...(createField('multiline', 1, { x: 100, y: 120, w: 300, h: 80 }, names) as Extract<FormField, { type: 'multiline' }>),
+      fontSize: 10,
       readOnly: true,
     });
     const check = add({
@@ -115,7 +115,9 @@ describe('export → import round trip', () => {
     expect(t.fontSize).toBe(12);
     expect(t.maxLength).toBe(40);
     expect(t.style).toEqual({ borderColor: '#ff0000', backgroundColor: '#eeeeee', textColor: '#0000ff' });
-    expect((got.get(multi.name) as Extract<FormField, { type: 'text' }>).multiline).toBe(true);
+    const m = got.get(multi.name) as Extract<FormField, { type: 'multiline' }>;
+    expect(m.type).toBe('multiline');
+    expect(m.fontSize).toBe(10);
     expect((got.get(check.name) as Extract<FormField, { type: 'checkbox' }>).checked).toBe(true);
     expect((got.get('size:M') as Extract<FormField, { type: 'radio' }>).checked).toBe(true);
     expect((got.get('size:S') as Extract<FormField, { type: 'radio' }>).checked).toBe(false);
@@ -137,6 +139,38 @@ describe('export → import round trip', () => {
     const doc = await PDFDocument.load(twice);
     expect(doc.getForm().getFields().map((f) => f.getName())).toEqual([a.name]);
     expect(doc.getPage(0).node.Annots()?.size()).toBe(1);
+  });
+
+  it('gives multi-line fields a fixed font size so readers do not shrink the text', async () => {
+    // A multi-line field created elsewhere with "auto" (0) font size.
+    const d = await PDFDocument.create();
+    const p = d.addPage([612, 792]);
+    const tf = d.getForm().createTextField('notes');
+    tf.enableMultiline();
+    tf.addToPage(p, { x: 50, y: 500, width: 300, height: 100 });
+    tf.acroField.setDefaultAppearance('/Helv 0 Tf 0 g');
+    const src = await d.save({ updateFieldAppearances: false });
+
+    const imported = await importPdf(src);
+    const notes = imported.fields[0];
+    expect(notes.type).toBe('multiline');
+    expect((notes as Extract<FormField, { type: 'multiline' }>).fontSize).toBe(12);
+
+    // Even a model that somehow holds 0 must never be written as "auto".
+    const out = await exportPdf(src, [{ ...(notes as Extract<FormField, { type: 'multiline' }>), fontSize: 0 }]);
+    const doc = await PDFDocument.load(out);
+    const field = doc.getForm().getTextField('notes');
+    expect(field.isMultiline()).toBe(true);
+    expect(field.acroField.getDefaultAppearance()).toMatch(/\/Helv 12 Tf/);
+  });
+
+  it('keeps single-line text fields on auto size by default', async () => {
+    const src = await makePdf();
+    const t = createField('text', 0, { x: 10, y: 10, w: 100, h: 20 }, []);
+    const doc = await PDFDocument.load(await exportPdf(src, [t]));
+    const field = doc.getForm().getTextField(t.name);
+    expect(field.isMultiline()).toBe(false);
+    expect(field.acroField.getDefaultAppearance()).toMatch(/\/Helv 0 Tf/);
   });
 
   it('rejects encrypted PDFs', async () => {

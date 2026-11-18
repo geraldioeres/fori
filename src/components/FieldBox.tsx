@@ -118,7 +118,7 @@ export function FieldBox({ field, zoom, siblings, onGuides }: Props) {
   };
 
   const s = field.style;
-  const fontPx = (field.type === 'text' || field.type === 'dropdown') && field.fontSize > 0
+  const fontPx = (field.type === 'text' || field.type === 'multiline' || field.type === 'dropdown') && field.fontSize > 0
     ? field.fontSize * zoom
     : Math.max(8, Math.min(field.h * 0.65, 14) * zoom);
 
@@ -175,7 +175,13 @@ function FieldContent({ field }: { field: FormField }) {
   switch (field.type) {
     case 'text':
       return (
-        <div className={`${cls} ${field.multiline ? 'items-start pt-0.5' : 'items-center'} whitespace-pre-wrap`}>
+        <div className={`${cls} items-center whitespace-pre`}>
+          {field.defaultValue || <span className="opacity-40">{field.name}</span>}
+        </div>
+      );
+    case 'multiline':
+      return (
+        <div className={`${cls} items-start whitespace-pre-wrap pt-0.5 leading-tight`}>
           {field.defaultValue || <span className="opacity-40">{field.name}</span>}
         </div>
       );

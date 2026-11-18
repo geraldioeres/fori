@@ -1,4 +1,4 @@
-export type FieldType = 'text' | 'checkbox' | 'radio' | 'dropdown';
+export type FieldType = 'text' | 'multiline' | 'checkbox' | 'radio' | 'dropdown';
 
 export interface FieldStyle {
   /** Hex color like `#000000`, or null for none. */
@@ -32,7 +32,18 @@ export interface TextField extends BaseField {
   /** 0 = auto size. */
   fontSize: number;
   maxLength: number | null;
-  multiline: boolean;
+}
+
+/**
+ * Multi-line text box. Always uses a fixed font size: with "auto", PDF readers shrink
+ * the text every time a line is added.
+ */
+export interface MultilineField extends BaseField {
+  type: 'multiline';
+  defaultValue: string;
+  /** Always > 0. */
+  fontSize: number;
+  maxLength: number | null;
 }
 
 export interface CheckboxField extends BaseField {
@@ -54,7 +65,7 @@ export interface DropdownField extends BaseField {
   fontSize: number;
 }
 
-export type FormField = TextField | CheckboxField | RadioField | DropdownField;
+export type FormField = TextField | MultilineField | CheckboxField | RadioField | DropdownField;
 
 /** An existing field of a type the editor does not support. Shown, never modified. */
 export interface LockedField extends Rect {

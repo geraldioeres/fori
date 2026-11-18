@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { ReactNode } from 'react';
-import { FIELD_LABELS, validateFields } from '../model/fields';
+import { FIELD_LABELS, FONT_SIZES, validateFields } from '../model/fields';
 import type { FieldStyle, FormField } from '../model/types';
 import { useEditor } from '../state/store';
 import { FieldIcon } from './FieldIcon';
@@ -136,10 +136,10 @@ export function PropertiesPanel() {
         </div>
       </section>
 
-      {f.type === 'text' && (
-        <Section title="Text">
+      {(f.type === 'text' || f.type === 'multiline') && (
+        <Section title={f.type === 'multiline' ? 'Multi-line text' : 'Text'}>
           <Row label="Default value">
-            {f.multiline ? (
+            {f.type === 'multiline' ? (
               <textarea
                 className={`${input} h-20 py-1`}
                 value={f.defaultValue}
@@ -152,8 +152,8 @@ export function PropertiesPanel() {
           <div className="grid grid-cols-2 gap-3">
             <Row label="Font size">
               <select className={input} value={f.fontSize} onChange={(e) => set({ fontSize: num(e.target.value) }, 'fontSize')}>
-                <option value={0}>Auto</option>
-                {[6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 36].map((n) => (
+                {f.type === 'text' && <option value={0}>Auto</option>}
+                {FONT_SIZES.map((n) => (
                   <option key={n} value={n}>
                     {n}
                   </option>
@@ -171,7 +171,11 @@ export function PropertiesPanel() {
               />
             </Row>
           </div>
-          <Check label="Multi-line" checked={f.multiline} onChange={(v) => set({ multiline: v }, 'multiline')} />
+          {f.type === 'multiline' && (
+            <p className="text-xs text-gray-500">
+              The font size stays fixed. When the box is full, the text scrolls instead of shrinking.
+            </p>
+          )}
         </Section>
       )}
 
