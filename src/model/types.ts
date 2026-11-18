@@ -1,4 +1,4 @@
-export type FieldType = 'text' | 'multiline' | 'checkbox' | 'radio' | 'dropdown' | 'image';
+export type FieldType = 'text' | 'multiline' | 'checkbox' | 'radio' | 'dropdown';
 
 export interface FieldStyle {
   /** Hex color like `#000000`, or null for none. */
@@ -65,15 +65,7 @@ export interface DropdownField extends BaseField {
   fontSize: number;
 }
 
-/**
- * Image box: a push button whose click action runs `buttonImportIcon()`, the same as Acrobat's
- * "Image field". Works in Adobe Acrobat / Reader; other readers show an empty box.
- */
-export interface ImageField extends BaseField {
-  type: 'image';
-}
-
-export type FormField = TextField | MultilineField | CheckboxField | RadioField | DropdownField | ImageField;
+export type FormField = TextField | MultilineField | CheckboxField | RadioField | DropdownField;
 
 /** An existing field of a type the editor does not support. Shown, never modified. */
 export interface LockedField extends Rect {

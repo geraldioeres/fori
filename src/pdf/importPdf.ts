@@ -1,4 +1,4 @@
-import { PDFButton, PDFCheckBox, PDFDropdown, PDFHexString, PDFName, PDFRadioGroup, PDFString, PDFTextField } from 'pdf-lib';
+import { PDFCheckBox, PDFDropdown, PDFHexString, PDFName, PDFRadioGroup, PDFString, PDFTextField } from 'pdf-lib';
 import type { PDFField } from 'pdf-lib';
 import { componentsToHex, parseDA } from '../model/color';
 import { pageInfo, pdfRectToDisplay } from '../model/coords';
@@ -83,8 +83,6 @@ export async function importPdf(bytes: Uint8Array): Promise<ImportResult> {
       } else if (field instanceof PDFRadioGroup) {
         const on = radioOptions[wi] ?? widget.getOnValue()?.decodeText() ?? `Choice${wi + 1}`;
         fields.push({ ...base, type: 'radio', exportValue: on, checked: field.getSelected() === on });
-      } else if (field instanceof PDFButton) {
-        fields.push({ ...base, type: 'image' });
       } else if (field instanceof PDFDropdown) {
         fields.push({
           ...base,

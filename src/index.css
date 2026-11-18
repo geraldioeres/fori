@@ -1,13 +1,18 @@
 @import 'tailwindcss';
 
-/* Fori brand purple, from the leaf logo. */
+/* Fori brand purple, from the leaf logo. Palette and usage rules: docs/DESIGN.md#color-palette */
 @theme {
-  --color-brand-50: #f8f0f9;
-  --color-brand-100: #f0dff2;
+  --color-brand-50: #faf5fb;
+  --color-brand-100: #f3e6f5;
+  --color-brand-200: #e7cdeb;
+  --color-brand-300: #d5a8dc;
+  --color-brand-400: #c07fc8;
   --color-brand-500: #b25bb8;
   --color-brand-600: #9b4aa3;
   --color-brand-700: #843c8c;
   --color-brand-800: #6c3173;
+  --color-brand-900: #572a5c;
+  --color-brand-950: #3a163e;
 }
 
 html, body, #root { height: 100%; }

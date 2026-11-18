@@ -12,7 +12,7 @@ import { FieldIcon } from './FieldIcon';
 import { Logo } from './Logo';
 
 export const DRAG_MIME = 'application/x-fori-field';
-const TYPES: FieldType[] = ['text', 'multiline', 'checkbox', 'radio', 'dropdown', 'image'];
+const TYPES: FieldType[] = ['text', 'multiline', 'checkbox', 'radio', 'dropdown'];
 
 function Tip({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -61,7 +61,7 @@ export function Toolbar() {
             onClick={() => s.setTool(s.tool === t ? null : t)}
             aria-pressed={s.tool === t}
             aria-label={FIELD_LABELS[t]}
-            className={`${btn} ${s.tool === t ? 'bg-blue-100 text-blue-700 hover:bg-blue-100' : ''}`}
+            className={`${btn} ${s.tool === t ? 'bg-brand-100 text-brand-700 hover:bg-brand-100' : ''}`}
           >
             <FieldIcon type={t} />
             {/* Labels only on wide screens; narrower toolbars show icons with the name in the tooltip. */}
@@ -107,7 +107,7 @@ export function Toolbar() {
         {busy === 'preview' ? 'Building…' : 'Preview'}
       </button>
       <button
-        className="ml-1 inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-md bg-blue-600 px-3 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60"
+        className="ml-1 inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-md bg-brand-600 px-3 text-sm font-medium text-white hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-200 active:bg-brand-800 disabled:opacity-60"
         onClick={() => run('download')}
         disabled={busy !== null}
       >

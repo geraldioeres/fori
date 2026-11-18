@@ -1,8 +1,5 @@
 import {
   PDFBool,
-  PDFButton,
-  PDFNumber,
-  PDFString,
   PDFCheckBox,
   PDFDropdown,
   PDFRadioGroup,
@@ -21,7 +18,7 @@ import { hexToRgb01 } from '../model/color';
 import { displayRectToPdf, pageInfo } from '../model/coords';
 import { MULTILINE_DEFAULT_FONT_SIZE, readingOrder } from '../model/fields';
 import type { FieldStyle, FormField, PageInfo, RadioField } from '../model/types';
-import { IMAGE_IMPORT_JS, isEditable, loadPdf, removeFieldCompletely } from './pdfForm';
+import { isEditable, loadPdf, removeFieldCompletely } from './pdfForm';
 
 const FONT_KEY = 'Helv';
 
@@ -51,23 +48,6 @@ function setDA(field: PDFField, fontSize: number, textColor: string) {
   const [r, g, b] = hexToRgb01(textColor);
   const n = (v: number) => Number(v.toFixed(3));
   field.acroField.setDefaultAppearance(`/${FONT_KEY} ${n(fontSize)} Tf ${n(r)} ${n(g)} ${n(b)} rg`);
-}
-
-/**
- * Turn a push-button widget into an image picker, the way Acrobat's "Image field" is built:
- * icon-only layout, icon scaled proportionally to fit, and a click action calling buttonImportIcon().
- */
-function makeImageButton(doc: PDFDocument, widget: PDFWidgetAnnotation) {
-  const mk = widget.getOrCreateAppearanceCharacteristics();
-  mk.dict.set(PDFName.of('TP'), PDFNumber.of(1)); // icon only, no caption
-  mk.dict.set(
-    PDFName.of('IF'),
-    doc.context.obj({ SW: 'A', S: 'P', A: [0.5, 0.5], FB: true }), // always scale, proportionally, centered
-  );
-  widget.dict.set(
-    PDFName.of('A'),
-    doc.context.obj({ S: 'JavaScript', JS: PDFString.of(IMAGE_IMPORT_JS) }),
-  );
 }
 
 /** Field-level /DA only: drop widget-level overrides so readers use the field's value. */
@@ -179,17 +159,6 @@ export async function exportPdf(original: Uint8Array, fields: FormField[]): Prom
         if ((f as RadioField).checked && !radioDefaults.has(f.name)) radioDefaults.set(f.name, f.exportValue);
         break;
       }
-      case 'image': {
-        const btn = form.createButton(f.name);
-        btn.addToPage('', page, opts);
-        const widget = lastWidget(btn);
-        placeWidget(widget, f, info);
-        makeImageButton(doc, widget);
-        if (f.readOnly) btn.enableReadOnly();
-        if (f.tooltip) btn.acroField.dict.set(PDFName.of('TU'), PDFHexString.fromText(f.tooltip));
-        created.set(btn, { size: 0, color: f.style.textColor });
-        break;
-      }
       case 'dropdown': {
         const dd = form.createDropdown(f.name);
         const options = f.options.filter((o) => o.length > 0);
@@ -212,7 +181,7 @@ export async function exportPdf(original: Uint8Array, fields: FormField[]): Prom
   // PostScript name), so restore the intended /DA before and after generating.
   for (const [field, da] of created) {
     resetDA(field, da.size, da.color);
-    if (field instanceof PDFTextField || field instanceof PDFDropdown || field instanceof PDFButton) field.updateAppearances(font);
+    if (field instanceof PDFTextField || field instanceof PDFDropdown) field.updateAppearances(font);
     else if (field instanceof PDFCheckBox || field instanceof PDFRadioGroup) field.updateAppearances();
     resetDA(field, da.size, da.color);
   }

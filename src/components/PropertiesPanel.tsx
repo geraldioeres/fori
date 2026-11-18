@@ -6,7 +6,7 @@ import { useEditor } from '../state/store';
 import { FieldIcon } from './FieldIcon';
 
 const input =
-  'h-8 w-full rounded-md border border-gray-300 bg-white px-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500';
+  'h-8 w-full rounded-md border border-gray-300 bg-white px-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500';
 
 function Row({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
   return (
@@ -21,7 +21,7 @@ function Row({ label, children, hint }: { label: string; children: ReactNode; hi
 function Check({ label, checked, onChange }: { label: string; checked: boolean; onChange(v: boolean): void }) {
   return (
     <label className="flex items-center gap-2 text-sm">
-      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="h-4 w-4" />
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="h-4 w-4 accent-brand-600" />
       {label}
     </label>
   );
@@ -43,7 +43,7 @@ function ColorInput({ label, value, onChange, allowNone }: { label: string; valu
       <div className="flex items-center gap-2">
         {allowNone && (
           <label className="flex items-center gap-1 text-xs text-gray-500">
-            <input type="checkbox" checked={value === null} onChange={(e) => onChange(e.target.checked ? null : '#000000')} />
+            <input type="checkbox" className="accent-brand-600" checked={value === null} onChange={(e) => onChange(e.target.checked ? null : '#000000')} />
             none
           </label>
         )}
@@ -131,9 +131,7 @@ export function PropertiesPanel() {
           <input className={input} value={f.tooltip} onChange={(e) => set({ tooltip: e.target.value }, 'tooltip')} />
         </Row>
         <div className="flex gap-4">
-          {f.type !== 'image' && (
-            <Check label="Required" checked={f.required} onChange={(v) => set({ required: v }, 'required')} />
-          )}
+          <Check label="Required" checked={f.required} onChange={(v) => set({ required: v }, 'required')} />
           <Check label="Read-only" checked={f.readOnly} onChange={(v) => set({ readOnly: v }, 'readOnly')} />
         </div>
       </section>
@@ -236,27 +234,15 @@ export function PropertiesPanel() {
         </Section>
       )}
 
-      {f.type === 'image' && (
-        <Section title="Image">
-          <p className="text-sm text-gray-700">
-            In Adobe Acrobat and Acrobat Reader, people click this box to choose an image. It’s scaled to fit, keeping its
-            proportions.
-          </p>
-          <p className="text-xs text-gray-500">Other PDF apps (browsers, macOS Preview) show the box but can’t add an image.</p>
-        </Section>
-      )}
-
       <Section title="Appearance">
         <ColorInput label="Border" value={f.style.borderColor} allowNone onChange={(v) => setStyle({ borderColor: v })} />
         <ColorInput label="Background" value={f.style.backgroundColor} allowNone onChange={(v) => setStyle({ backgroundColor: v })} />
-        {f.type !== 'image' && (
-          <ColorInput
-            label={f.type === 'checkbox' || f.type === 'radio' ? 'Mark color' : 'Text color'}
-            value={f.style.textColor}
-            allowNone={false}
-            onChange={(v) => setStyle({ textColor: v ?? '#000000' })}
-          />
-        )}
+        <ColorInput
+          label={f.type === 'checkbox' || f.type === 'radio' ? 'Mark color' : 'Text color'}
+          value={f.style.textColor}
+          allowNone={false}
+          onChange={(v) => setStyle({ textColor: v ?? '#000000' })}
+        />
       </Section>
 
       <Section title="Position (pt)">
