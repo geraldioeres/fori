@@ -17,7 +17,10 @@ export interface SavedSession {
 export async function loadSession(): Promise<SavedSession | null> {
   try {
     const saved = (await get<SavedSession>(KEY)) ?? null;
-    if (saved) saved.fields = saved.fields.map(migrateField);
+    if (saved) {
+      // Image fields existed briefly (Acrobat-only, removed); drop any left in a saved session.
+      saved.fields = saved.fields.filter((f) => (f.type as string) !== 'image').map(migrateField);
+    }
     return saved;
   } catch {
     return null;

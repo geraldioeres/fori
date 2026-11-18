@@ -68,7 +68,7 @@ export function UploadScreen() {
         <p className="mt-4 text-sm text-gray-500">or drop a PDF anywhere on this page</p>
 
         <p className="mt-16 max-w-md text-sm text-gray-500">
-          Add text, multi-line, checkbox, radio, dropdown and image fields, then download a PDF anyone can fill in. Your file never
+          Add text, multi-line, checkbox, radio and dropdown fields, then download a PDF anyone can fill in. Your file never
           leaves your browser.
         </p>
 

@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { AcroButtonFlags, PDFDict, PDFDocument, PDFName, PDFNumber, PDFString, degrees } from 'pdf-lib';
+import { PDFDocument, degrees } from 'pdf-lib';
 import { createField, readingOrder, validateFields } from '../../src/model/fields';
 import { displayRectToPdf, pageInfo, pdfRectToDisplay } from '../../src/model/coords';
 import { exportPdf } from '../../src/pdf/exportPdf';
 import { importPdf } from '../../src/pdf/importPdf';
-import { EncryptedPdfError, IMAGE_IMPORT_JS } from '../../src/pdf/pdfForm';
+import { EncryptedPdfError } from '../../src/pdf/pdfForm';
 import type { FormField } from '../../src/model/types';
 
 /** Page 0: plain Letter. Page 1: rotated 90°. Page 2: crop box offset + rotated 270°. */
@@ -171,61 +171,6 @@ describe('export → import round trip', () => {
     const field = doc.getForm().getTextField(t.name);
     expect(field.isMultiline()).toBe(false);
     expect(field.acroField.getDefaultAppearance()).toMatch(/\/Helv 0 Tf/);
-  });
-
-  it('exports image fields as Acrobat image buttons and imports them back', async () => {
-    const src = await makePdf();
-    const img0 = { ...createField('image', 0, { x: 40, y: 50, w: 150, h: 110 }, []), tooltip: 'Your photo' };
-    const img1 = createField('image', 1, { x: 300, y: 200, w: 120, h: 90 }, [img0.name]);
-    const out = await exportPdf(src, [img0, img1]);
-
-    const doc = await PDFDocument.load(out);
-    const btn = doc.getForm().getButton(img0.name);
-    const widget = btn.acroField.getWidgets()[0];
-    const action = widget.dict.lookup(PDFName.of('A')) as PDFDict;
-    expect(String(action.lookup(PDFName.of('S')))).toBe('/JavaScript');
-    expect((action.lookup(PDFName.of('JS')) as PDFString).decodeText()).toBe(IMAGE_IMPORT_JS);
-    const mk = widget.getAppearanceCharacteristics()!;
-    expect((mk.dict.lookup(PDFName.of('TP')) as PDFNumber).asNumber()).toBe(1);
-    expect(btn.acroField.hasFlag(AcroButtonFlags.PushButton)).toBe(true);
-
-    const back = await importPdf(out);
-    expect(back.locked).toEqual([]);
-    expect(back.fields).toHaveLength(2);
-    for (const want of [img0, img1]) {
-      const f = back.fields.find((x) => x.name === want.name)!;
-      expect(f.type).toBe('image');
-      expect(f.page).toBe(want.page);
-      near(f.x, want.x);
-      near(f.y, want.y);
-      near(f.w, want.w);
-      near(f.h, want.h);
-    }
-    expect(back.fields.find((x) => x.name === img0.name)!.tooltip).toBe('Your photo');
-  });
-
-  it('recognises image fields made elsewhere, and keeps other buttons locked', async () => {
-    const d = await PDFDocument.create();
-    const p = d.addPage([612, 792]);
-    const form = d.getForm();
-    // Acrobat-style image field: script on the mouse-up (/AA /U) action.
-    const photo = form.createButton('photo');
-    photo.addToPage('', p, { x: 50, y: 500, width: 100, height: 100 });
-    photo.acroField.getWidgets()[0].dict.set(
-      PDFName.of('AA'),
-      d.context.obj({ U: { S: 'JavaScript', JS: PDFString.of('event.target.buttonImportIcon();') } }),
-    );
-    // An ordinary button (e.g. "Print") must stay locked.
-    form.createButton('print').addToPage('Print', p, { x: 50, y: 400, width: 80, height: 24 });
-    const src = await d.save();
-
-    const r = await importPdf(src);
-    expect(r.fields.map((f) => [f.name, f.type])).toEqual([['photo', 'image']]);
-    expect(r.locked.map((l) => l.name)).toEqual(['print']);
-
-    // Re-exporting keeps the locked button and rewrites the image field.
-    const out = await PDFDocument.load(await exportPdf(src, r.fields));
-    expect(out.getForm().getFields().map((f) => f.getName()).sort()).toEqual(['photo', 'print']);
   });
 
   it('rejects encrypted PDFs', async () => {

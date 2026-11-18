@@ -8,7 +8,7 @@ Settled during the design interview on 2026-11-18.
 | Q1 | **Fillable-form builder**: places real AcroForm fields on an existing PDF so others can fill them in any reader. "Fill & flatten" is a possible later add-on. |
 | Q2 | Personal / internal tool. No accounts, no billing. |
 | Q3 | 100% client-side. pdf.js renders, pdf-lib reads/writes. Files never leave the browser. |
-| Q4 | v1 field types: single-line text, multi-line text (a separate tool/type), checkbox, radio group, dropdown, image. Image fields are push buttons whose click runs `buttonImportIcon()` (same as Acrobat's Image field): they work in Adobe Acrobat / Reader only, which is what the target users have. |
+| Q4 | v1 field types: single-line text, multi-line text (a separate tool/type), checkbox, radio group, dropdown. |
 | Q5 | React + TypeScript + Vite; DOM overlay for fields (no canvas lib). |
 | Q6 | Input is an uploaded PDF only (no blank documents in v1). |
 | Q7 | Existing AcroForm fields are imported and editable. Unsupported types (signature, button, list box) are preserved untouched and shown as locked outlines. |

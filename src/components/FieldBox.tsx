@@ -196,17 +196,6 @@ function FieldContent({ field }: { field: FormField }) {
           <span className="opacity-60">▾</span>
         </div>
       );
-    case 'image':
-      return (
-        <div className={`${cls} flex-col items-center justify-center gap-1 text-gray-500`}>
-          <svg width="28" height="28" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" className="max-h-[50%] max-w-[50%] shrink" aria-hidden>
-            <rect x="1.5" y="2.5" width="13" height="11" rx="1.5" />
-            <circle cx="5.5" cy="6" r="1.3" />
-            <path d="M2 12l4-3.5 3 2.5 2-1.5 3.5 2.5" />
-          </svg>
-          <span className="truncate text-[11px] leading-none">Image</span>
-        </div>
-      );
   }
 }
 

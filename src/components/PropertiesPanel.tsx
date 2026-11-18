@@ -131,9 +131,7 @@ export function PropertiesPanel() {
           <input className={input} value={f.tooltip} onChange={(e) => set({ tooltip: e.target.value }, 'tooltip')} />
         </Row>
         <div className="flex gap-4">
-          {f.type !== 'image' && (
-            <Check label="Required" checked={f.required} onChange={(v) => set({ required: v }, 'required')} />
-          )}
+          <Check label="Required" checked={f.required} onChange={(v) => set({ required: v }, 'required')} />
           <Check label="Read-only" checked={f.readOnly} onChange={(v) => set({ readOnly: v }, 'readOnly')} />
         </div>
       </section>
@@ -236,27 +234,15 @@ export function PropertiesPanel() {
         </Section>
       )}
 
-      {f.type === 'image' && (
-        <Section title="Image">
-          <p className="text-sm text-gray-700">
-            In Adobe Acrobat and Acrobat Reader, people click this box to choose an image. It’s scaled to fit, keeping its
-            proportions.
-          </p>
-          <p className="text-xs text-gray-500">Other PDF apps (browsers, macOS Preview) show the box but can’t add an image.</p>
-        </Section>
-      )}
-
       <Section title="Appearance">
         <ColorInput label="Border" value={f.style.borderColor} allowNone onChange={(v) => setStyle({ borderColor: v })} />
         <ColorInput label="Background" value={f.style.backgroundColor} allowNone onChange={(v) => setStyle({ backgroundColor: v })} />
-        {f.type !== 'image' && (
-          <ColorInput
-            label={f.type === 'checkbox' || f.type === 'radio' ? 'Mark color' : 'Text color'}
-            value={f.style.textColor}
-            allowNone={false}
-            onChange={(v) => setStyle({ textColor: v ?? '#000000' })}
-          />
-        )}
+        <ColorInput
+          label={f.type === 'checkbox' || f.type === 'radio' ? 'Mark color' : 'Text color'}
+          value={f.style.textColor}
+          allowNone={false}
+          onChange={(v) => setStyle({ textColor: v ?? '#000000' })}
+        />
       </Section>
 
       <Section title="Position (pt)">
