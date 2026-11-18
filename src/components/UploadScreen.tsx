@@ -55,7 +55,7 @@ export function UploadScreen() {
         <p className="mt-3 text-xl font-medium text-brand-600 sm:text-2xl">Don’t worry, we gotcha!</p>
 
         <button
-          className="mt-10 inline-flex items-center gap-3 rounded-xl bg-brand-600 px-10 py-4 text-lg font-semibold text-white shadow-lg shadow-brand-600/25 transition hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-100 active:bg-brand-800 disabled:opacity-60"
+          className="mt-10 inline-flex items-center gap-3 rounded-xl bg-brand-600 px-10 py-4 text-lg font-semibold text-white shadow-lg shadow-brand-600/25 transition hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-200 active:bg-brand-800 disabled:opacity-60"
           onClick={() => input.current?.click()}
           disabled={busy}
         >

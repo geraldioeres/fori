@@ -47,12 +47,12 @@ function Thumb({ index }: { index: number }) {
       onClick={() => document.getElementById(pageElementId(index))?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
     >
       <div
-        className="relative bg-white shadow ring-blue-500 group-hover:ring-2"
+        className="relative bg-white shadow ring-brand-400 group-hover:ring-2"
         style={{ width: THUMB_WIDTH, height: info.height * scale }}
       >
         <canvas ref={canvas} className="h-full w-full" />
         {count > 0 && (
-          <span className="absolute right-1 top-1 rounded-full bg-blue-600 px-1.5 text-[10px] leading-4 text-white">{count}</span>
+          <span className="absolute right-1 top-1 rounded-full bg-brand-600 px-1.5 text-[10px] leading-4 text-white">{count}</span>
         )}
       </div>
       <span className="text-xs text-gray-500">{index + 1}</span>

@@ -126,13 +126,13 @@ export function FieldBox({ field, zoom, siblings, onGuides }: Props) {
     <div
       data-field-id={field.id}
       data-testid="field"
-      className={`absolute select-none ${selected ? 'outline-2 outline-blue-600' : 'outline-1 outline-blue-400/70 hover:outline-blue-600'}`}
+      className={`absolute select-none ${selected ? 'outline-2 outline-brand-600' : 'outline-1 outline-brand-400/70 hover:outline-brand-600'}`}
       style={{
         left: field.x * zoom,
         top: field.y * zoom,
         width: field.w * zoom,
         height: field.h * zoom,
-        background: s.backgroundColor ?? 'rgba(59,130,246,0.10)',
+        background: s.backgroundColor ?? 'color-mix(in srgb, var(--color-brand-500) 10%, transparent)',
         border: s.borderColor ? `${Math.max(1, zoom)}px solid ${s.borderColor}` : undefined,
         borderRadius: field.type === 'radio' ? '50%' : undefined,
         color: s.textColor,
@@ -149,14 +149,14 @@ export function FieldBox({ field, zoom, siblings, onGuides }: Props) {
       <FieldContent field={field} />
       {selected && (
         <>
-          <span className="pointer-events-none absolute -top-5 left-0 whitespace-nowrap rounded bg-blue-600 px-1 text-[10px] leading-4 text-white">
+          <span className="pointer-events-none absolute -top-5 left-0 whitespace-nowrap rounded bg-brand-600 px-1 text-[10px] leading-4 text-white">
             {field.type === 'radio' ? `${field.name} = ${field.exportValue}` : field.name}
           </span>
           {HANDLES.map((h) => (
             <span
               key={h}
               data-handle={h}
-              className="absolute h-2 w-2 rounded-sm border border-blue-600 bg-white"
+              className="absolute h-2 w-2 rounded-sm border border-brand-600 bg-white"
               style={HANDLE_POS[h]}
               onPointerDown={(e) => begin(e, h)}
               onPointerMove={move}

@@ -28,7 +28,7 @@ function Tip({ label, children }: { label: string; children: ReactNode }) {
 }
 
 const btn =
-  'inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-40 disabled:hover:bg-transparent';
+  'inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-40 disabled:hover:bg-transparent';
 
 export function Toolbar() {
   const s = useEditor();
@@ -45,13 +45,13 @@ export function Toolbar() {
   return (
     <header className="flex h-12 shrink-0 items-center gap-1 border-b border-gray-200 bg-white px-3">
       <Logo size={24} className="mr-2 shrink-0" />
-      <span className="mr-2 max-w-56 truncate text-sm font-medium" title={s.doc?.fileName}>
+      <span className="mr-2 min-w-0 max-w-56 truncate text-sm font-medium" title={s.doc?.fileName}>
         {s.doc?.fileName}
       </span>
-      <div className="mx-2 h-6 w-px bg-gray-200" />
+      <div className="mx-2 h-6 w-px shrink-0 bg-gray-200" />
 
       {TYPES.map((t) => (
-        <Tip key={t} label={`Click, then click on the page — or drag onto the page`}>
+        <Tip key={t} label={`${FIELD_LABELS[t]} — click, then click on the page, or drag onto the page`}>
           <button
             draggable
             onDragStart={(e) => {
@@ -60,15 +60,17 @@ export function Toolbar() {
             }}
             onClick={() => s.setTool(s.tool === t ? null : t)}
             aria-pressed={s.tool === t}
-            className={`${btn} ${s.tool === t ? 'bg-blue-100 text-blue-700 hover:bg-blue-100' : ''}`}
+            aria-label={FIELD_LABELS[t]}
+            className={`${btn} ${s.tool === t ? 'bg-brand-100 text-brand-700 hover:bg-brand-100' : ''}`}
           >
             <FieldIcon type={t} />
-            {FIELD_LABELS[t]}
+            {/* Labels only on wide screens; narrower toolbars show icons with the name in the tooltip. */}
+            <span className="hidden xl:inline">{FIELD_LABELS[t]}</span>
           </button>
         </Tip>
       ))}
 
-      <div className="mx-2 h-6 w-px bg-gray-200" />
+      <div className="mx-2 h-6 w-px shrink-0 bg-gray-200" />
       <Tip label="Undo (Ctrl+Z)">
         <button className={btn} onClick={s.undo} disabled={s.past.length === 0} aria-label="Undo">
           ↶
@@ -80,7 +82,7 @@ export function Toolbar() {
         </button>
       </Tip>
 
-      <div className="mx-2 h-6 w-px bg-gray-200" />
+      <div className="mx-2 h-6 w-px shrink-0 bg-gray-200" />
       <button
         className={btn}
         aria-label="Zoom out"
@@ -105,7 +107,7 @@ export function Toolbar() {
         {busy === 'preview' ? 'Building…' : 'Preview'}
       </button>
       <button
-        className="ml-1 inline-flex h-8 items-center rounded-md bg-blue-600 px-3 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60"
+        className="ml-1 inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-md bg-brand-600 px-3 text-sm font-medium text-white hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-200 active:bg-brand-800 disabled:opacity-60"
         onClick={() => run('download')}
         disabled={busy !== null}
       >

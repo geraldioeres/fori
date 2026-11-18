@@ -6,7 +6,7 @@ import { useEditor } from '../state/store';
 import { FieldIcon } from './FieldIcon';
 
 const input =
-  'h-8 w-full rounded-md border border-gray-300 bg-white px-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500';
+  'h-8 w-full rounded-md border border-gray-300 bg-white px-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500';
 
 function Row({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
   return (
@@ -21,7 +21,7 @@ function Row({ label, children, hint }: { label: string; children: ReactNode; hi
 function Check({ label, checked, onChange }: { label: string; checked: boolean; onChange(v: boolean): void }) {
   return (
     <label className="flex items-center gap-2 text-sm">
-      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="h-4 w-4" />
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="h-4 w-4 accent-brand-600" />
       {label}
     </label>
   );
@@ -43,7 +43,7 @@ function ColorInput({ label, value, onChange, allowNone }: { label: string; valu
       <div className="flex items-center gap-2">
         {allowNone && (
           <label className="flex items-center gap-1 text-xs text-gray-500">
-            <input type="checkbox" checked={value === null} onChange={(e) => onChange(e.target.checked ? null : '#000000')} />
+            <input type="checkbox" className="accent-brand-600" checked={value === null} onChange={(e) => onChange(e.target.checked ? null : '#000000')} />
             none
           </label>
         )}

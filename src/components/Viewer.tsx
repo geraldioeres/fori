@@ -119,9 +119,9 @@ function PageView({ index }: { index: number }) {
           ))}
           {guides.map((g, i) =>
             g.axis === 'x' ? (
-              <div key={i} className="pointer-events-none absolute top-0 bottom-0 w-px bg-pink-500" style={{ left: g.at * zoom }} />
+              <div key={i} className="pointer-events-none absolute top-0 bottom-0 w-px bg-teal-500" style={{ left: g.at * zoom }} />
             ) : (
-              <div key={i} className="pointer-events-none absolute right-0 left-0 h-px bg-pink-500" style={{ top: g.at * zoom }} />
+              <div key={i} className="pointer-events-none absolute right-0 left-0 h-px bg-teal-500" style={{ top: g.at * zoom }} />
             ),
           )}
         </div>
