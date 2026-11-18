@@ -1,4 +1,14 @@
 @import 'tailwindcss';
 
+/* Fori brand purple, from the leaf logo. */
+@theme {
+  --color-brand-50: #f8f0f9;
+  --color-brand-100: #f0dff2;
+  --color-brand-500: #b25bb8;
+  --color-brand-600: #9b4aa3;
+  --color-brand-700: #843c8c;
+  --color-brand-800: #6c3173;
+}
+
 html, body, #root { height: 100%; }
 body { margin: 0; background: #e5e7eb; color: #111827; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
